@@ -1,34 +1,44 @@
+import java.util.Map;
+
 public class Owner {
 
 
-    private Wallet myWallet;
+    private String name;
+    private Map<String, Wallet> wallets;
 
 
-    Owner(Wallet wallet){
-        this.myWallet = wallet;
-
-
+    Owner(String name, Map<String, Wallet> wallets){
+        this.wallets = wallets;
     }
 
-    public void addMoney(double amount){
+    public void addMoney(String walletName, double amount) throws UnknownWalletException {
+
+        Wallet wallet = getWallet(walletName);
         System.out.println("Adding money Rs."+amount);
-        myWallet.addMoney(amount);
+        wallet.addMoney(amount);
     }
 
-    public void removeMoney(double amount) {
+    private Wallet getWallet(String name) throws UnknownWalletException {
+
+        if (wallets.containsKey(name))
+            return wallets.get(name);
+
+        throw new UnknownWalletException("Unknown wallet");
+    }
+
+    public void removeMoney(String walletName, double amount) throws UnknownWalletException, InsufficientBalanceException {
+
+        Wallet wallet = getWallet(walletName);
         System.out.println("Removing money Rs."+amount);
+        wallet.removeMoney(amount);
 
-        try {
-            myWallet.removeMoney(amount);
-        } catch (Exception e) {
-
-            System.out.println ("Exception while removing money: " + e.getMessage());
-        }
     }
 
-    public void checkBalance(){
+    public void checkBalance(String walletName) throws UnknownWalletException{
+
+        Wallet wallet = getWallet(walletName);
         System.out.println("Checking balance");
-        myWallet.checkBalance();
+        wallet.checkBalance();
     }
 }
 
